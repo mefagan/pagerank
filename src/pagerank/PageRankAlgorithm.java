@@ -123,11 +123,24 @@ public class PageRankAlgorithm {
     }
   }
   
+  public static int getWordCount(String path) {
+    int wordCount = 0;
+    try {
+      System.out.println("No: of lines : ");
+      ProcessBuilder pb = new ProcessBuilder("wc", "-w", path);
+      pb.inheritIO();
+      Process p = pb.start();
+      p.waitFor();
+    } catch (Exception e) {
+      e.printStackTrace();
+  }
+    return wordCount;
+  }
+  
   public static void main(String args[]) throws IOException {
     String path = args[0];
     double F =Double.parseDouble(args[1]);
-    System.out.println(path);
-    System.out.println(F);
+   
     PageRankAlgorithm algo = new PageRankAlgorithm(path, F);
     File input = new File(path);
     BufferedReader in = new BufferedReader(new FileReader(path));
@@ -139,7 +152,8 @@ public class PageRankAlgorithm {
         int j = cut.indexOf(">");
         String url = cut.substring(0, j-1);
         System.out.println(url);
-        
+        System.out.println(getWordCount(url));
+
       }
     in.close();
   }
