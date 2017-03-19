@@ -2,6 +2,7 @@ package pagerank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Page {
    private double base;
@@ -59,4 +60,19 @@ public class Page {
    public void setNewScore(double newScore) {
      this.newScore = newScore;
    }
+   
+   @Override
+   public boolean equals(Object o) {
+       if (this == o)
+           return true;
+       if (o == null)
+           return false;
+       if (getClass() != o.getClass())
+           return false;
+       Page page = (Page) o;
+       // field comparison
+       return Objects.equals(path, page.path)
+               && Objects.equals(wordCount, page.wordCount);
+   }
+
 }
