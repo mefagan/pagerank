@@ -1,23 +1,10 @@
 package pagerank;
 
-//url reader https://docs.oracle.com/javase/tutorial/networking/urls/readingURL.html
-//word count - http://stackoverflow.com/questions/5864159/count-words-in-a-string-method
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +105,6 @@ public class PageRankAlgorithm {
        qSum += pages.get(Q).getScore() * weights[P][Q];
     }
     return qSum;
- 
   }
   
   public boolean setNewScore() {
@@ -175,7 +161,6 @@ public class PageRankAlgorithm {
   
   public static ArrayList<Page> getPagesFromDirectory(String path) throws IOException {
     ArrayList<Page> pages = new ArrayList<Page>();
-    File input = new File(path);
     BufferedReader in = new BufferedReader(new FileReader(path));
     String inputLine;
     while ((inputLine = in.readLine()) != null)
@@ -193,7 +178,6 @@ public class PageRankAlgorithm {
     in.close();
     return pages;
   }
-  
   
   public static void main(String args[]) throws IOException {
     String path = args[0];
