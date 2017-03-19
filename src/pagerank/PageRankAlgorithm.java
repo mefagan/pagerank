@@ -1,12 +1,23 @@
 package pagerank;
 
+//url reader https://docs.oracle.com/javase/tutorial/networking/urls/readingURL.html
+//word count - http://stackoverflow.com/questions/5864159/count-words-in-a-string-method
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,20 +25,30 @@ public class PageRankAlgorithm {
   private double sum;
   private double F;
   private int N;
-  public List<Page> pages = new ArrayList<Page>();
+  private List<Page> pages = new ArrayList<Page>();
   double[][] weights;
   public double epsilon;
   
-  PageRankAlgorithm(String path, double F) {
+  PageRankAlgorithm(String path, double F, ArrayList<Page> links) {
     //read in files from directory
+    for (Page page: links) {
+      pages.add(page);
+    }
     this.F = F;
-    
     this.N = pages.size();
-    System.out.println(this.N);
     weights = new double[N][N];
     epsilon = 0.01/N;
     calculateSum();
     calculateScore();
+  }
+  
+  public boolean addPage(Page page) {
+    pages.add(page);
+    return true;
+  }
+  
+  public List<Page> getPages(){
+    return pages;
   }
   
   //calculate sum
@@ -123,25 +144,37 @@ public class PageRankAlgorithm {
     }
   }
   
-  public static int getWordCount(String path) {
+  public static int getWordCountPerUrl(String url) throws IOException {
     int wordCount = 0;
-    try {
-      System.out.println("No: of lines : ");
-      ProcessBuilder pb = new ProcessBuilder("wc", "-w", path);
-      pb.inheritIO();
-      Process p = pb.start();
-      p.waitFor();
-    } catch (Exception e) {
-      e.printStackTrace();
-  }
+    URL link = new URL(url);
+    BufferedReader in = new BufferedReader(new InputStreamReader(link.openStream()));
+    String inputLine;
+    while ((inputLine = in.readLine()) != null) {
+      wordCount += countWords(inputLine);
+    }
+    in.close();
     return wordCount;
   }
   
-  public static void main(String args[]) throws IOException {
-    String path = args[0];
-    double F =Double.parseDouble(args[1]);
-   
-    PageRankAlgorithm algo = new PageRankAlgorithm(path, F);
+  public static int countWords(String s){
+    int wordCount = 0;
+    boolean word = false;
+    int endOfLine = s.length() - 1;
+    for (int i = 0; i < s.length(); i++) {
+        if (Character.isLetter(s.charAt(i)) && i != endOfLine) {
+            word = true;
+        } else if (!Character.isLetter(s.charAt(i)) && word) {
+            wordCount++;
+            word = false;
+        } else if (Character.isLetter(s.charAt(i)) && i == endOfLine) {
+            wordCount++;
+        }
+    }
+    return wordCount;
+}
+  
+  public static ArrayList<Page> getPagesFromDirectory(String path) throws IOException {
+    ArrayList<Page> pages = new ArrayList<Page>();
     File input = new File(path);
     BufferedReader in = new BufferedReader(new FileReader(path));
     String inputLine;
@@ -151,11 +184,26 @@ public class PageRankAlgorithm {
         String cut = inputLine.substring(i+2);
         int j = cut.indexOf(">");
         String url = cut.substring(0, j-1);
-        System.out.println(url);
-        System.out.println(getWordCount(url));
-
+        int wc = getWordCountPerUrl(url);
+        int x = url.lastIndexOf('/');
+        String name = url.substring(x+1, url.length()-5);
+        Page page = new Page(wc, name);
+        pages.add(page);
       }
     in.close();
+    return pages;
+  }
+  
+  
+  public static void main(String args[]) throws IOException {
+    String path = args[0];
+    double F =Double.parseDouble(args[1]);
+    ArrayList<Page> pages = getPagesFromDirectory(path);
+    PageRankAlgorithm algo = new PageRankAlgorithm(path, F, pages);
+    for (Page page: algo.getPages()) {
+      System.out.println(page.getPath());
+      System.out.println(page.getWordCount());
+    }
   }
  
 }

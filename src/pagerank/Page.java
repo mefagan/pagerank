@@ -19,6 +19,10 @@ public class Page {
      this.path = path;
    }
    
+   public String getPath() {
+     return this.path;
+   }
+   
    public List<Page> getOutlinks() {
      return outlinks;
    }
@@ -32,7 +36,6 @@ public class Page {
    }
    
    public int getWordCount() {
-     System.out.println("hell");
      return wordCount;
    }
    
