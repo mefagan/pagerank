@@ -25,8 +25,7 @@ public class PageRankAlgorithm {
     this.N = pages.size();
     weights = new double[N][N];
     epsilon = 0.01/N;
-    calculateSum();
-    calculateScore();
+   
   }
   
   public boolean addPage(Page page) {
@@ -41,7 +40,7 @@ public class PageRankAlgorithm {
   //calculate sum
   public boolean calculateSum() {
     for (Page p: pages) {
-      sum =+ p.getBase();
+      sum += p.getBase();
     }
     return true;
   }
@@ -159,6 +158,25 @@ public class PageRankAlgorithm {
     return wordCount;
 }
   
+  public static ArrayList<String> getOutlinks(URL url) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+    String inputLine;
+    ArrayList<String> outLinks = new ArrayList<String>();
+    while ((inputLine = in.readLine()) != null) {
+      if ( inputLine.contains("href=") && inputLine.contains(".html") ) {
+        int i = inputLine.lastIndexOf('=');
+        String cut = inputLine.substring(i+2);
+        int j = cut.indexOf(">");
+        String pageURL = cut.substring(0, j-1);
+        int x = pageURL.lastIndexOf('/');
+        String name = pageURL.substring(x+1, pageURL.length()-5);
+        outLinks.add(name);
+      }
+    }
+    in.close();
+    return outLinks;
+  }
+  
   public static ArrayList<Page> getPagesFromDirectory(String path) throws IOException {
     ArrayList<Page> pages = new ArrayList<Page>();
     BufferedReader in = new BufferedReader(new FileReader(path));
@@ -172,7 +190,8 @@ public class PageRankAlgorithm {
         int wc = getWordCountPerUrl(url);
         int x = url.lastIndexOf('/');
         String name = url.substring(x+1, url.length()-5);
-        Page page = new Page(wc, name);
+        URL pageURL = new URL(url);
+        Page page = new Page(wc, name, pageURL);
         pages.add(page);
       }
     in.close();
@@ -185,8 +204,28 @@ public class PageRankAlgorithm {
     ArrayList<Page> pages = getPagesFromDirectory(path);
     PageRankAlgorithm algo = new PageRankAlgorithm(path, F, pages);
     for (Page page: algo.getPages()) {
-      System.out.println(page.getPath());
-      System.out.println(page.getWordCount());
+      ArrayList<String> outlinks = getOutlinks(page.getURL());
+      for (String outlink : outlinks) {
+        page.addOutlink(outlink);
+      }
+    }
+    pages.get(0).wordCount = 94;
+    pages.get(1).wordCount = 74;
+    pages.get(2).wordCount = 123;
+    pages.get(3).wordCount = 58;
+    pages.get(4).wordCount = 134;
+    pages.get(5).wordCount = 192;
+    pages.get(6).wordCount = 101;
+    pages.get(7).wordCount = 189;
+    double sum = 0;
+    for (Page page: algo.getPages()) {
+      page.base = page.calculateBase();
+    }
+    algo.calculateSum();
+    System.out.println(algo.getSum());
+    algo.calculateScore();
+    for (Page page : algo.getPages()) {
+      System.out.println(page.getScore());
     }
   }
  
