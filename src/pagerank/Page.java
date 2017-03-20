@@ -9,7 +9,7 @@ public class Page {
    public double base;
    public int wordCount;
    private double score;
-   private List<String> outlinks;
+   private List<Page> outlinks;
    private double newScore;
    private String path;
    private URL url;
@@ -17,7 +17,7 @@ public class Page {
    //calculate base values
    Page(int wordCount, String path, URL url) {
      this.wordCount = wordCount;
-     outlinks = new ArrayList<String>();
+     outlinks = new ArrayList<Page>();
      this.path = path;
      this.url = url;
    }
@@ -30,11 +30,11 @@ public class Page {
      return this.path;
    }
    
-   public List<String> getOutlinks() {
+   public List<Page> getOutlinks() {
      return outlinks;
    }
    
-   public boolean addOutlink(String page) {
+   public boolean addOutlink(Page page) {
      return outlinks.add(page);
    }
    

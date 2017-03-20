@@ -6,13 +6,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PageRankAlgorithm {
   private double sum;
   private double F;
   private int N;
   private List<Page> pages = new ArrayList<Page>();
+  public Map<String, Page> pageMap = new HashMap<String, Page>();
   double[][] weights;
   public double epsilon;
   
@@ -20,6 +23,7 @@ public class PageRankAlgorithm {
     //read in files from directory
     for (Page page: links) {
       pages.add(page);
+      pageMap.put(page.getPath(), page);
     }
     this.F = F;
     this.N = pages.size();
@@ -158,10 +162,10 @@ public class PageRankAlgorithm {
     return wordCount;
 }
   
-  public static ArrayList<String> getOutlinks(URL url) throws IOException {
+  public static ArrayList<Page> getOutlinks(URL url, Map<String, Page> map) throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
     String inputLine;
-    ArrayList<String> outLinks = new ArrayList<String>();
+    ArrayList<Page> outLinks = new ArrayList<Page>();
     while ((inputLine = in.readLine()) != null) {
       if ( inputLine.contains("href=") && inputLine.contains(".html") ) {
         int i = inputLine.lastIndexOf('=');
@@ -170,7 +174,8 @@ public class PageRankAlgorithm {
         String pageURL = cut.substring(0, j-1);
         int x = pageURL.lastIndexOf('/');
         String name = pageURL.substring(x+1, pageURL.length()-5);
-        outLinks.add(name);
+        Page page = map.get(name);
+        outLinks.add(page);
       }
     }
     in.close();
@@ -204,8 +209,8 @@ public class PageRankAlgorithm {
     ArrayList<Page> pages = getPagesFromDirectory(path);
     PageRankAlgorithm algo = new PageRankAlgorithm(path, F, pages);
     for (Page page: algo.getPages()) {
-      ArrayList<String> outlinks = getOutlinks(page.getURL());
-      for (String outlink : outlinks) {
+      ArrayList<Page> outlinks = getOutlinks(page.getURL(), algo.pageMap);
+      for (Page outlink : outlinks) {
         page.addOutlink(outlink);
       }
     }
@@ -217,7 +222,6 @@ public class PageRankAlgorithm {
     pages.get(5).wordCount = 192;
     pages.get(6).wordCount = 101;
     pages.get(7).wordCount = 189;
-    double sum = 0;
     for (Page page: algo.getPages()) {
       page.base = page.calculateBase();
     }
@@ -227,6 +231,7 @@ public class PageRankAlgorithm {
     for (Page page : algo.getPages()) {
       System.out.println(page.getScore());
     }
+    System.out.println(algo.pageMap.size());
   }
  
 }
