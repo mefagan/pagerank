@@ -59,45 +59,39 @@ public class PageRankAlgorithm {
     }
   }
   
-  public void calculateEmptyLinks(int P) {
-    for (int Q = 0; Q < pages.size(); Q++) {
-      weights[Q][P] = pages.get(Q).getScore();
+  public void calculateEmptyLinks(Page P) {
+    for (Page Q: pages) {
+      weights[Q.index][P.index] = pages.get(Q.index).getScore();
     }
   }
   
-  double calculateWeightSum(int P) {
+  double calculateWeightSum(Page P) {
     double weightSum = 0;
-    for (int Q = 0; Q < pages.size(); Q++) {
-      weightSum =+ weights[Q][P];
+    for (Page Q: pages) {
+      weightSum = weightSum + weights[Q.index][P.index];
     }
     return weightSum;
   }
   
-  public void normalizeWeights(int P, double weightSum, Page page) {
-    for (int Q = 0; Q < page.getOutlinks().size(); Q++) {
-      weights[Q][P] = weights[Q][P]/weightSum;
-    }
+  public void normalizeWeights(Page P, double weightSum, Page page) {
+    for (Page Q: P.getOutlinks())
+      weights[Q.index][P.index] = weights[Q.index][P.index]/sum;
   }
   
-  public double calculateWeight(int P, int Q) {
-    return 1;
-  }
-  
-  public void calculateNonemptyWeights(int P) {
-    for (int Q = 0; Q < pages.size(); Q++) {
-      weights[Q][P] =+ calculateWeight(P, Q);
+  public void calculateNonemptyWeights(Page P) {
+    for (Page Q: P.getOutlinks()) {
+      weights[P.index][Q.index] = weights[P.index][Q.index] + Q.weight;
     }
   }
   
   public void calculateWeights() {
-    for (int P = 0; P < pages.size(); P++) {
-      Page page = pages.get(P);
+    for (Page page: pages) {
       if (page.getOutlinks().isEmpty()) {
-        calculateEmptyLinks(P);
+        calculateEmptyLinks(page);
       } else {
-        calculateNonemptyWeights(P);
-        double weightSum = calculateWeightSum(P);
-        normalizeWeights(P, weightSum, page);
+        calculateNonemptyWeights(page);
+        double weightSum = calculateWeightSum(page);
+        //normalizeWeights(page, weightSum, page);
       }
     }
   }
@@ -168,6 +162,7 @@ public class PageRankAlgorithm {
     ArrayList<Page> outLinks = new ArrayList<Page>();
     while ((inputLine = in.readLine()) != null) {
       if ( inputLine.contains("href=") && inputLine.contains(".html") ) {
+        System.out.println(inputLine);
         int i = inputLine.lastIndexOf('=');
         String cut = inputLine.substring(i+2);
         int j = cut.indexOf(">");
@@ -175,7 +170,12 @@ public class PageRankAlgorithm {
         int x = pageURL.lastIndexOf('/');
         String name = pageURL.substring(x+1, pageURL.length()-5);
         Page page = map.get(name);
-        outLinks.add(page);
+        Page ol = new Page(page.getWordCount(), page.getPath(), page.getURL(), page.index);
+        ol.weight = ol.weight+1;
+        if (inputLine.contains("<b>")){
+          ol.weight = ol.weight+1;
+        }
+        outLinks.add(ol);
       }
     }
     in.close();
@@ -186,6 +186,7 @@ public class PageRankAlgorithm {
     ArrayList<Page> pages = new ArrayList<Page>();
     BufferedReader in = new BufferedReader(new FileReader(path));
     String inputLine;
+    int index = 0;
     while ((inputLine = in.readLine()) != null)
       if ( inputLine.contains("href=") && inputLine.contains(".html") ) {
         int i = inputLine.lastIndexOf('=');
@@ -196,7 +197,8 @@ public class PageRankAlgorithm {
         int x = url.lastIndexOf('/');
         String name = url.substring(x+1, url.length()-5);
         URL pageURL = new URL(url);
-        Page page = new Page(wc, name, pageURL);
+        Page page = new Page(wc, name, pageURL, index);
+        index++;
         pages.add(page);
       }
     in.close();
@@ -227,6 +229,16 @@ public class PageRankAlgorithm {
     }
     algo.calculateSum();
     algo.calculateScore();
+    algo.calculateWeights();
+    for (Page page: algo.getPages()) {
+      System.out.println(page.getPath());
+      for (Page outlink: page.getOutlinks()) {
+        System.out.println(outlink.getPath());
+        System.out.println(algo.weights[page.index][outlink.index]);
+      }
+    }
   }
  
+  
+  //walrus, seal, bear
 }

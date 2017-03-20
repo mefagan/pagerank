@@ -13,13 +13,16 @@ public class Page {
    private double newScore;
    private String path;
    private URL url;
+   public int index;
+   public int weight = 0;
    
    //calculate base values
-   Page(int wordCount, String path, URL url) {
+   Page(int wordCount, String path, URL url, int index) {
      this.wordCount = wordCount;
      outlinks = new ArrayList<Page>();
      this.path = path;
      this.url = url;
+     this.index = index;
    }
    
    public URL getURL() {
@@ -52,9 +55,6 @@ public class Page {
    
    public boolean calculateScore(double sum) {
      score = base/sum;
-     System.out.println(path);
-     System.out.println("base =" + base);
-     System.out.println("score = " + score);
      return true;
    }
    
