@@ -124,6 +124,7 @@ public class PageRankAlgorithm {
         }
        }
       for (Page page: pages) {
+        System.out.println(page.getNewScore());
         page.setScore(page.getNewScore());
       } 
     }
@@ -248,7 +249,7 @@ public class PageRankAlgorithm {
     });
     
     for (Page page: algo.getPages()) {
-      System.out.println(page.getPath() + "     " + page.getNewScore());
+      System.out.println(page.getPath() + "     " + page.getScore());
     }
   }
 }
