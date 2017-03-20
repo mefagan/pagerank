@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +119,6 @@ public class PageRankAlgorithm {
       for (Page page: pages) {
         double qSum = getQSum(page);
         page.setNewScore ( ((1-F) * page.getScore()) + (F * qSum) );
-        System.out.println("new score - " + page.getNewScore());
         if (Math.abs(page.getNewScore() - page.getScore()) > epsilon) {
           changed = true;
         }
@@ -239,8 +240,15 @@ public class PageRankAlgorithm {
     algo.calculateScore();
     algo.calculateWeights();
     algo.setNewScore();
+    Collections.sort(algo.getPages(), new Comparator<Page>() {
+      @Override
+      public int compare(Page p1, Page p2) {
+          return Double.compare(p2.getScore(), p1.getScore());
+      }
+    });
+    
     for (Page page: algo.getPages()) {
-      System.out.println(page.getPath() + " - " + page.getNewScore());
+      System.out.println(page.getPath() + "     " + page.getNewScore());
     }
   }
 }
