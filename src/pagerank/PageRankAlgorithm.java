@@ -105,7 +105,7 @@ public class PageRankAlgorithm {
     for (Page p: pages) {  
       for (Page Q: p.getOutlinks()) {
         if (Q.equals(page)) {
-          qSum = qSum + normalizedWeights[page.index][p.index] * p.getScore();  
+          qSum = qSum + normalizedWeights[p.index][page.index] * p.getScore();  
         }
       }
     }
