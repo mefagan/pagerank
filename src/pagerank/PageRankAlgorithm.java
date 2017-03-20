@@ -171,11 +171,19 @@ public class PageRankAlgorithm {
         String name = pageURL.substring(x+1, pageURL.length()-5);
         Page page = map.get(name);
         Page ol = new Page(page.getWordCount(), page.getPath(), page.getURL(), page.index);
-        ol.weight = ol.weight+1;
-        if (inputLine.contains("<b>")){
+        if (outLinks.contains(ol)) {
+          int m = outLinks.indexOf(ol);
+          outLinks.get(m).weight = outLinks.get(m).weight + 1;
+          if (inputLine.contains("<b>")){
+            ol.weight++;
+          }
+        } else {
           ol.weight = ol.weight+1;
+          if (inputLine.contains("<b>")){
+            ol.weight = ol.weight+1;
+          }
+          outLinks.add(ol);
         }
-        outLinks.add(ol);
       }
     }
     in.close();
@@ -233,8 +241,7 @@ public class PageRankAlgorithm {
     for (Page page: algo.getPages()) {
       System.out.println(page.getPath());
       for (Page outlink: page.getOutlinks()) {
-        System.out.println(outlink.getPath());
-        System.out.println(algo.weights[page.index][outlink.index]);
+        System.out.println(outlink.getPath() + algo.weights[page.index][outlink.index]);
       }
     }
   }
