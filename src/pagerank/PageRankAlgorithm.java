@@ -226,12 +226,7 @@ public class PageRankAlgorithm {
       page.base = page.calculateBase();
     }
     algo.calculateSum();
-    System.out.println(algo.getSum());
     algo.calculateScore();
-    for (Page page : algo.getPages()) {
-      System.out.println(page.getScore());
-    }
-    System.out.println(algo.pageMap.size());
   }
  
 }
