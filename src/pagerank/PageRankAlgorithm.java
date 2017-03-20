@@ -17,6 +17,7 @@ public class PageRankAlgorithm {
   private List<Page> pages = new ArrayList<Page>();
   public Map<String, Page> pageMap = new HashMap<String, Page>();
   double[][] weights;
+  double[][] normalizedWeights;
   public double epsilon;
   
   PageRankAlgorithm(String path, double F, ArrayList<Page> links) {
@@ -28,6 +29,7 @@ public class PageRankAlgorithm {
     this.F = F;
     this.N = pages.size();
     weights = new double[N][N];
+    normalizedWeights = new double[N][N];
     epsilon = 0.01/N;
    
   }
@@ -73,9 +75,10 @@ public class PageRankAlgorithm {
     return weightSum;
   }
   
-  public void normalizeWeights(Page P) {
-    for (Page Q: P.getOutlinks())
-      weights[Q.index][P.index] = weights[Q.index][P.index]/sum;
+  public void normalizeWeights(Page P, double weightSum) {
+    for (Page Q: P.getOutlinks()) {
+      normalizedWeights[P.index][Q.index] = (weights[P.index][Q.index])/weightSum;
+    }
   }
   
   public void calculateNonemptyWeights(Page P) {
@@ -91,7 +94,7 @@ public class PageRankAlgorithm {
       } else {
         calculateNonemptyWeights(page);
         double weightSum = calculateWeightSum(page);
-       // normalizeWeights(page, weightSum, page);
+        normalizeWeights(page, weightSum);
       }
     }
   }
