@@ -67,13 +67,13 @@ public class PageRankAlgorithm {
   
   double calculateWeightSum(Page P) {
     double weightSum = 0;
-    for (Page Q: pages) {
-      weightSum = weightSum + weights[Q.index][P.index];
+    for (Page Q: P.getOutlinks()) {
+      weightSum = weightSum + weights[P.index][Q.index];
     }
     return weightSum;
   }
   
-  public void normalizeWeights(Page P, double weightSum, Page page) {
+  public void normalizeWeights(Page P) {
     for (Page Q: P.getOutlinks())
       weights[Q.index][P.index] = weights[Q.index][P.index]/sum;
   }
@@ -91,7 +91,7 @@ public class PageRankAlgorithm {
       } else {
         calculateNonemptyWeights(page);
         double weightSum = calculateWeightSum(page);
-        //normalizeWeights(page, weightSum, page);
+       // normalizeWeights(page, weightSum, page);
       }
     }
   }
