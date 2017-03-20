@@ -109,7 +109,7 @@ public class PageRankAlgorithm {
           //p are the pages with outlinks to page
           //so it's p-->page
           //p-->q where p==p and page==q
-          qSum = qSum + normalizedWeights[p.index][Q.index] * p.getScore();  
+          qSum = qSum + (normalizedWeights[p.index][Q.index] * p.getScore()); 
         }
       }
     }

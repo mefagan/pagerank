@@ -55,7 +55,8 @@ public class Page {
    }
    
    public boolean calculateScore(double sum) {
-     score = base/sum;
+     base = base/sum;
+     score = base;
      return true;
    }
    
