@@ -1,8 +1,8 @@
 MaryEileen Fagan
 Programming Assigment 2
-Program can be run by compiling and running the PageRankAlgorithm.java class with 2 arguments. The first argument is the path to the directory and second is the F value. The program assumes that the directory is saved in the specified folder, but does not assume that the html files are saved. The program should output the names of the files followed by their page ranking, listed in descending order of page rank.
+Program can be run by compiling and running the PageRankAlgorithm.java class with 2 arguments. The first argument is the path to the directory and second is the F value. The program assumes that the directory is saved in the specified folder, but does not assume that the html files are saved. The links are treated as URL links. The program outputs the names of the files followed by their page ranking, listed in descending order of page rank.
 For example, I can compile and run the program using the following two command line arguments.
-/Users/maryeileenfagan/Documents/Eclipse/pagerank/pagerankinput/example.htm 0.7i
+/Users/maryeileenfagan/Documents/Eclipse/pagerank/pagerankinput/example.htm 0.7
 
 This gives the following console output when tested with the example input. 
 
