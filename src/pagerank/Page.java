@@ -84,9 +84,7 @@ public class Page {
            return false;
        Page page = (Page) o;
        // field comparison
-       return Objects.equals(path, page.path)
-               && Objects.equals(wordCount, page.wordCount) 
-               && Objects.equals(url, page.url);
+       return Objects.equals(path, page.path);
    }
 
 }

@@ -99,37 +99,32 @@ public class PageRankAlgorithm {
   }
   
   double getQSum(Page page) {
-    double qSum = 0;
-    for (Page Q: page.getOutlinks()) {
-       qSum = qSum + (Q.getScore() * weights[Q.index][page.index]);
-    }
-    System.out.println("qSum = " + qSum);
-    //return qSum;
-    return .19211428;
-  }
-  
-  public boolean setNewScore() {
-    boolean changed = false;
-    for (Page page: pages) { 
-      double qSum = getQSum(page);
-      System.out.println(qSum);
-      double newScore = ( (1-F) * page.getScore() ) + (F * qSum);
-      System.out.println(newScore);
-      page.setNewScore(newScore);
-      if ( (Math.abs(page.getNewScore() - page.getScore()) ) > epsilon) {
-        changed = true;
+   double qSum = 0;
+    for (Page p: pages) {  
+      for (Page Q: p.getOutlinks()) {
+        if (Q.equals(page)) {
+          qSum = qSum + normalizedWeights[page.index][p.index] * p.getScore();  
+        }
       }
     }
-    return changed;
+    return qSum;
   }
   
-  public void calculateNewScore() {
-    boolean changed = false;
-    while (changed){
-      changed = setNewScore();
+  public void setNewScore() {
+    boolean changed = true;
+    while (changed) {
+      changed = false;
+      for (Page page: pages) {
+        double qSum = getQSum(page);
+        page.setNewScore ( ((1-F) * page.getScore()) + (F * qSum) );
+        System.out.println("new score - " + page.getNewScore());
+        if (Math.abs(page.getNewScore() - page.getScore()) > epsilon) {
+          changed = true;
+        }
+       }
       for (Page page: pages) {
         page.setScore(page.getNewScore());
-      }
+      } 
     }
   }
   
@@ -244,9 +239,8 @@ public class PageRankAlgorithm {
     algo.calculateScore();
     algo.calculateWeights();
     algo.setNewScore();
-    Page page = pages.get(0);
-    System.out.println(page.getPath());
-    System.out.println(page.getScore());
-    System.out.println("new score = " + page.getNewScore());
+    for (Page page: algo.getPages()) {
+      System.out.println(page.getPath() + " - " + page.getNewScore());
+    }
   }
 }
