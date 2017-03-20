@@ -105,9 +105,29 @@ public class PageRankAlgorithm {
     for (Page p: pages) {  
       for (Page Q: p.getOutlinks()) {
         if (Q.equals(page)) {
-          qSum = qSum + normalizedWeights[p.index][page.index] * p.getScore();  
+          //page is the main
+          //p are the pages with outlinks to page
+          //so it's p-->page
+          //p-->q where p==p and page==q
+          qSum = qSum + normalizedWeights[p.index][Q.index] * p.getScore();  
         }
       }
+    }
+    return qSum;
+  }
+  
+  double getQSumAlt1(Page page){
+    double qSum = 0;
+    for (Page Q: page.getOutlinks()) {
+      qSum = qSum + normalizedWeights[page.index][Q.index];
+    }
+    return qSum;
+  }
+  
+  double getQSumAlt2(Page page){
+    double qSum = 0;
+    for (Page Q: page.getOutlinks()) {
+      qSum = qSum + Q.getScore(); 
     }
     return qSum;
   }
@@ -118,13 +138,12 @@ public class PageRankAlgorithm {
       changed = false;
       for (Page page: pages) {
         double qSum = getQSum(page);
-        page.setNewScore ( ((1-F) * page.getScore()) + (F * qSum) );
+        page.setNewScore ( (1-F) * page.getBase() + F * qSum);
         if (Math.abs(page.getNewScore() - page.getScore()) > epsilon) {
           changed = true;
         }
        }
       for (Page page: pages) {
-        System.out.println(page.getNewScore());
         page.setScore(page.getNewScore());
       } 
     }
