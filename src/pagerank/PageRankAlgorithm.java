@@ -105,10 +105,6 @@ public class PageRankAlgorithm {
     for (Page p: pages) {  
       for (Page Q: p.getOutlinks()) {
         if (Q.equals(page)) {
-          //page is the main
-          //p are the pages with outlinks to page
-          //so it's p-->page
-          //p-->q where p==p and page==q
           qSum = qSum + (normalizedWeights[p.index][Q.index] * p.getScore()); 
         }
       }
@@ -229,14 +225,6 @@ public class PageRankAlgorithm {
         page.addOutlink(outlink);
       }
     }
-    pages.get(0).wordCount = 94;
-    pages.get(1).wordCount = 74;
-    pages.get(2).wordCount = 123;
-    pages.get(3).wordCount = 58;
-    pages.get(4).wordCount = 134;
-    pages.get(5).wordCount = 192;
-    pages.get(6).wordCount = 101;
-    pages.get(7).wordCount = 189;
     for (Page page: algo.getPages()) {
       page.base = page.calculateBase();
     }

@@ -2,7 +2,6 @@ package pagerank;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,7 +84,6 @@ public class Page {
        if (getClass() != o.getClass())
            return false;
        Page page = (Page) o;
-       // field comparison
        return Objects.equals(path, page.path);
    }
    
