@@ -43,7 +43,6 @@ public class PageRankAlgorithm {
     return pages;
   }
   
-  //calculate sum
   public boolean calculateSum() {
     for (Page p: pages) {
       sum += p.getBase();
@@ -99,21 +98,25 @@ public class PageRankAlgorithm {
     }
   }
   
-  double getQSum(int P) {
+  double getQSum(Page page) {
     double qSum = 0;
-    for (int Q = 0; Q < pages.size(); Q++) {
-       qSum += pages.get(Q).getScore() * weights[P][Q];
+    for (Page Q: page.getOutlinks()) {
+       qSum = qSum + (Q.getScore() * weights[Q.index][page.index]);
     }
-    return qSum;
+    System.out.println("qSum = " + qSum);
+    //return qSum;
+    return .19211428;
   }
   
   public boolean setNewScore() {
     boolean changed = false;
-    for (int P = 0; P < pages.size(); P++) { 
-      double qSum = getQSum(P);
-      double newScore = (1-F) * pages.get(P).getBase() + F * qSum;
-      pages.get(P).setNewScore(newScore);
-      if (Math.abs(pages.get(P).getNewScore() - pages.get(P).getScore()) > epsilon) {
+    for (Page page: pages) { 
+      double qSum = getQSum(page);
+      System.out.println(qSum);
+      double newScore = ( (1-F) * page.getScore() ) + (F * qSum);
+      System.out.println(newScore);
+      page.setNewScore(newScore);
+      if ( (Math.abs(page.getNewScore() - page.getScore()) ) > epsilon) {
         changed = true;
       }
     }
@@ -165,7 +168,6 @@ public class PageRankAlgorithm {
     ArrayList<Page> outLinks = new ArrayList<Page>();
     while ((inputLine = in.readLine()) != null) {
       if ( inputLine.contains("href=") && inputLine.contains(".html") ) {
-        System.out.println(inputLine);
         int i = inputLine.lastIndexOf('=');
         String cut = inputLine.substring(i+2);
         int j = cut.indexOf(">");
@@ -177,7 +179,7 @@ public class PageRankAlgorithm {
         if (outLinks.contains(ol)) {
           int m = outLinks.indexOf(ol);
           outLinks.get(m).weight = outLinks.get(m).weight + 1;
-          if (inputLine.contains("<b>")){
+          if (inputLine.contains("<b>") || inputLine.contains("<H") || inputLine.contains("<em>") ){
             ol.weight++;
           }
         } else {
@@ -241,14 +243,10 @@ public class PageRankAlgorithm {
     algo.calculateSum();
     algo.calculateScore();
     algo.calculateWeights();
-    for (Page page: algo.getPages()) {
-      System.out.println(page.getPath());
-      for (Page outlink: page.getOutlinks()) {
-        System.out.println(outlink.getPath() + algo.weights[page.index][outlink.index]);
-      }
-    }
+    algo.setNewScore();
+    Page page = pages.get(0);
+    System.out.println(page.getPath());
+    System.out.println(page.getScore());
+    System.out.println("new score = " + page.getNewScore());
   }
- 
-  
-  //walrus, seal, bear
 }
