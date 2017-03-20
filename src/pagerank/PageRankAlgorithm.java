@@ -116,22 +116,6 @@ public class PageRankAlgorithm {
     return qSum;
   }
   
-  double getQSumAlt1(Page page){
-    double qSum = 0;
-    for (Page Q: page.getOutlinks()) {
-      qSum = qSum + normalizedWeights[page.index][Q.index];
-    }
-    return qSum;
-  }
-  
-  double getQSumAlt2(Page page){
-    double qSum = 0;
-    for (Page Q: page.getOutlinks()) {
-      qSum = qSum + Q.getScore(); 
-    }
-    return qSum;
-  }
-  
   public void setNewScore() {
     boolean changed = true;
     while (changed) {
